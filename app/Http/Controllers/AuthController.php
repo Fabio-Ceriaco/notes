@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
+
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -36,7 +39,9 @@ class AuthController extends Controller
         $username = $request->input('text_username');
         $password = $request->input('text_password');
 
-        echo 'ok';
+
+
+        echo 'FIM';
     }
 
     //================================================================
