@@ -70,13 +70,17 @@ class AuthController extends Controller
             ]
         ]);
 
-        echo 'Login com sucesso';
+        return redirect()->route('index');
     }
 
     //================================================================
     public function logout()
     {
 
-        echo 'Logout';
+        // logout from aplication
+        session()->forget('user');
+
+        // redirect to login page
+        return redirect()->route('login');
     }
 }
