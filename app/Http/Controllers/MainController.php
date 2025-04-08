@@ -72,6 +72,10 @@ class MainController extends Controller
     {
         $id = Operations::decryptId($id);
 
+        if ($id == null) {
+            return redirect()->route('index');
+        }
+
         // load note
         $note = Note::find($id);
 
@@ -128,6 +132,10 @@ class MainController extends Controller
         // decrypt note_id
         $id = Operations::decryptId($id);
 
+        if ($id == null) {
+            return redirect()->route('index');
+        }
+
         // load note
         $note = Note::find($id);
 
@@ -141,6 +149,10 @@ class MainController extends Controller
 
         // decrypt note_id
         $id = Operations::decryptId($id);
+
+        if ($id == null) {
+            return redirect()->route('index');
+        }
 
         // load note
         $note = Note::find($id);

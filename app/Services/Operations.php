@@ -17,7 +17,7 @@ class Operations
             $value = Crypt::decrypt($value);
         } catch (DecryptException $e) {
             // if not encrypted, redirect to index
-            return redirect()->route('index');
+            return null;
         }
 
         return $value;
