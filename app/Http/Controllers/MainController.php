@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Note;
 use App\Models\User;
 use App\Services\Operations;
 use Illuminate\Http\Request;
-
+use LDAP\Result;
 
 class MainController extends Controller
 {
@@ -25,7 +26,45 @@ class MainController extends Controller
     public function newNote()
     {
 
-        echo 'New note';
+        // show new note view
+        return view('new_note');
+    }
+
+    //================================================================
+    public function newNoteSubmit(Request $request)
+    {
+
+        // validate resquest
+
+        $request->validate(
+            // rules
+            [
+                'text_title' => 'required|min:3|max:200',
+                'text_note' => 'required|min:3|max:3000',
+            ],
+            // messages
+            [
+                'text_title.required' => 'Title is required.',
+                'text_title.min' => 'Note title must have at least :min characters.',
+                'text_title.max' => 'Note title must have at least :max characters.',
+                'text_note.required' => 'Note is required.',
+                'text_note.min' => 'Your note must have at least :min characters.',
+                'text_note.max' => 'Your note must have at least :max characters.',
+            ],
+        );
+
+        // get user id
+        $userId = session('user.id');
+
+        // create new note
+        $newNote = new Note();
+        $newNote->user_id = $userId;
+        $newNote->title = $request->input('text_title');
+        $newNote->text = $request->input('text_note');
+        $newNote->save();
+
+        // redirect Index
+        return redirect()->route('index');
     }
 
     //================================================================
@@ -33,7 +72,54 @@ class MainController extends Controller
     {
         $id = Operations::decryptId($id);
 
-        echo $id;
+        // load note
+        $note = Note::find($id);
+
+        // show edit note view
+
+        return view('edit_note', ['note' => $note]);
+    }
+
+    //================================================================
+    public function  editNotesubmit(Request $request)
+    {
+
+        // validate resquest
+
+        $request->validate(
+            // rules
+            [
+                'text_title' => 'required|min:3|max:200',
+                'text_note' => 'required|min:3|max:3000',
+            ],
+            // messages
+            [
+                'text_title.required' => 'Title is required.',
+                'text_title.min' => 'Note title must have at least :min characters.',
+                'text_title.max' => 'Note title must have at least :max characters.',
+                'text_note.required' => 'Note is required.',
+                'text_note.min' => 'Your note must have at least :min characters.',
+                'text_note.max' => 'Your note must have at least :max characters.',
+            ],
+        );
+
+        // check if note_id exists
+        if ($request->input('note_id') == null) {
+            return redirect()->route('index');
+        }
+        // decrypt note_id
+
+        $noteId = Operations::decryptId($request->input('note_id'));
+
+        // load note
+        $note = Note::find($noteId);
+        // update note
+        $note->title = $request->input('text_title');
+        $note->text = $request->input('text_note');
+        $note->save();
+        // redirect to index
+
+        return redirect()->route('index');
     }
     //================================================================
     public function deleteNote($id)
